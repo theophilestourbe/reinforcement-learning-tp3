@@ -47,8 +47,10 @@ class QLearningAgent:
         Compute your agent's estimate of V(s) using current q-values
         V(s) = max_a Q(s, a) over possible actions.
         """
-        value = 0.0
+        value = -100
         # BEGIN SOLUTION
+        for a in range(len(self.legal_actions)):
+            value = max(value, self.get_qvalue(state, a))
         # END SOLUTION
         return value
 
@@ -63,6 +65,9 @@ class QLearningAgent:
         """
         q_value = 0.0
         # BEGIN SOLUTION
+        tar = reward + self.gamma * self.get_value(next_state)
+        q_old = self.get_qvalue(state, action)
+        q_value = q_old + self.learning_rate * (tar - q_old)
         # END SOLUTION
 
         self.set_qvalue(state, action, q_value)
@@ -91,6 +96,12 @@ class QLearningAgent:
         action = self.legal_actions[0]
 
         # BEGIN SOLUTION
+        r = np.random.rand()
+        if r < self.epsilon:
+            action = np.random.choice(self.legal_actions)
+        else:
+            action = self.get_best_action(state)
+        
         # END SOLUTION
 
         return action
